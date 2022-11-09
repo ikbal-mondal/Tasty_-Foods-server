@@ -26,6 +26,14 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
             const query = {};
             const cursor =  serviceCollection.find(query);
+            const service = await cursor.limit(3).toArray();
+            res.send(service)
+
+         })
+         app.get('/allService', async (req,res) => {
+
+            const query = {};
+            const cursor =  serviceCollection.find(query);
             const service = await cursor.toArray();
             res.send(service)
 
@@ -38,6 +46,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(service)
          })
   
+         
     }
     finally{
 
