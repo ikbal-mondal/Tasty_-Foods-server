@@ -47,7 +47,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             res.send(service)
          })
         
-         
+         app.post('/reviews', async(req,res)=> {
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review)
+            res.send(result);
+         })
   
          
     }
