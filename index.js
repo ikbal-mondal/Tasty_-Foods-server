@@ -23,6 +23,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     try{
     const serviceCollection = client.db('Tasty_Foods').collection('services')
     const reviewCollection = client.db('Tasty_Foods').collection('reviews')
+    const CreateServiceCollection = client.db('Tasty_Foods').collection('CreateService')
          app.get('/services', async (req,res) => {
 
             const query = {};
@@ -46,6 +47,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const service = await serviceCollection.findOne(query);
             res.send(service)
          })
+
+         app.post('/CreateService', async(req,res) => {
+
+            const CreateService = req.body;
+            const result = await CreateServiceCollection.insertOne(CreateService);
+            res.send(result)
+         })
         
          
          app.get('/reviews', async(req,res) => {
@@ -64,7 +72,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const result = await reviewCollection.insertOne(review)
             res.send(result);
          })
-  
+       
+          app.delete('/reviews/:id', async(req,res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id)}
+            const result = await reviewCollection.deleteOne(query)
+            res.send(result)
+          })
          
     }
     finally{
