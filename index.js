@@ -23,7 +23,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
     try{
     const serviceCollection = client.db('Tasty_Foods').collection('services')
     const reviewCollection = client.db('Tasty_Foods').collection('reviews')
-    const CreateServiceCollection = client.db('Tasty_Foods').collection('CreateService')
+  
          app.get('/services', async (req,res) => {
 
             const query = {};
@@ -45,15 +45,31 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const id = req.params.id;
             const query = {_id: ObjectId(id)}
             const service = await serviceCollection.findOne(query);
+            console.log(service);
             res.send(service)
          })
+
+         
+          app.get('/CreateService', async(req,res)=> {
+            let query = {};
+            if(req.query.email){
+               query ={
+                  email: req.query.email
+               }
+            }
+            const cursor = serviceCollection.find(query);
+            const CreateService = await cursor.toArray()
+            res.send(CreateService)
+
+          })
 
          app.post('/CreateService', async(req,res) => {
 
             const CreateService = req.body;
-            const result = await CreateServiceCollection.insertOne(CreateService);
+            const result = await serviceCollection.insertOne(CreateService);
             res.send(result)
          })
+
         
          
          app.get('/reviews', async(req,res) => {
@@ -79,7 +95,13 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
             const result = await reviewCollection.deleteOne(query)
             res.send(result)
           })
-         
+         app.get('/reviews/:id', async(req,res) => {
+            const id = req.params.id
+            const query = {foodId:id }
+            const cursor =  reviewCollection.find(query)
+            const result = await cursor.toArray()
+           res.send(result)
+         })
     }
     finally{
 
